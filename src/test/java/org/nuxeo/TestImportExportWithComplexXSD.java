@@ -47,10 +47,7 @@ public class TestImportExportWithComplexXSD {
         Assert.assertNotNull(doc);
 
         verifyProperties(doc);
-
         File out = File.createTempFile("model-io", ".zip");
-
-        System.out.println(out.getAbsolutePath());
 
         DocumentReader reader = new SingleDocumentReader(session, doc);
         DocumentWriter writer = new NuxeoArchiveWriter(out);
