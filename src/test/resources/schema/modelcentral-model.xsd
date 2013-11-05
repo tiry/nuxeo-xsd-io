@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:ml="http://modelcentral.fico.com/schemas/model/"
+           elementFormDefault="qualified"
+           targetNamespace="http://modelcentral.fico.com/schemas/model/">
+
+    <!-- ================== Type definitions ===========================-->
+
+    <xs:complexType name="scoreBin">
+        <xs:sequence>
+            <xs:element name="label" type="xs:string"/>
+            <xs:element name="upperBound" type="xs:double"/>
+            <xs:element name="baseline" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="scoreBinning">
+        <xs:sequence>
+            <xs:element name="bins">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="bin" type="ml:scoreBin" minOccurs="0" maxOccurs="10000"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="reviewStatus">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+    <xs:complexType name="modelSegment">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="value" type="xs:string" minOccurs="0"/>
+            <xs:element name="cutoffScore" type="xs:double"/>
+            <xs:element name="formula" type="xs:string"/>
+            <xs:element name="scoreDistributions">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="scoreDistribution" type="ml:scoreDistribution" minOccurs="0"
+                maxOccurs="10000" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="segmentFilter" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="modelType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Behavior"/>
+            <xs:enumeration value="Collection"/>
+            <xs:enumeration value="Insurance"/>
+            <xs:enumeration value="Originations"/>
+            <xs:enumeration value="Expert"/>
+            <xs:enumeration value="Overdraft"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="modelOrigin">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Internal"/>
+            <xs:enumeration value="ThirdParty"/>
+            <xs:enumeration value="VendorScore"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="modelOutcomeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Binary"/>
+            <xs:enumeration value="Continuous"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="modelTechnology">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="LinearRegression"/>
+            <xs:enumeration value="LogisticRegression"/>
+            <xs:enumeration value="Scorecard"/>
+            <xs:enumeration value="NeuralNetwork"/>
+            <xs:enumeration value="DecisionTree"/>
+            <xs:enumeration value="Expert"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="roleType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="NoRole"/>
+            <xs:enumeration value="ScoreDate"/>
+            <xs:enumeration value="Score"/>
+            <xs:enumeration value="Target"/>
+            <xs:enumeration value="ModelID"/>
+            <xs:enumeration value="SegmentID"/>
+            <xs:enumeration value="ComparisonScore"/>
+            <xs:enumeration value="SampleWeight"/>
+            <xs:enumeration value="ModelCharacteristic"/>
+            <xs:enumeration value="Decision"/>
+            <xs:enumeration value="OverrideCode"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="dataType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="string"/>
+            <xs:enumeration value="date"/>
+            <xs:enumeration value="integer"/>
+            <xs:enumeration value="real"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="variableType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="rawVariable"/>
+            <xs:enumeration value="targetVariable"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="variable">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="target" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="variableType" type="ml:variableType"/>
+            <xs:element name="dataType" type="ml:dataType"/>
+            <xs:element name="validationColumn" type="xs:string"/>
+            <xs:element name="baselineColumn" type="xs:string"/>
+            <xs:element name="customName" type="xs:string"/>
+            <xs:element name="selected" type="xs:boolean"/>
+            <xs:element name="roles">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="role" type="ml:roleType" minOccurs="0" maxOccurs="10000"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="continuousTargetName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="schema">
+
+        <xs:sequence>
+            <xs:element minOccurs="0" name="description" type="xs:string"/>
+
+            <xs:element name="rawVariables">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="variable" type="ml:variable" minOccurs="0" maxOccurs="10000"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="targetVariables">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="variable" type="ml:variable" minOccurs="0" maxOccurs="10000"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+
+    </xs:complexType>
+
+    <xs:complexType name="dataset">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="description" type="xs:string"/>
+
+            <xs:element name="datasetType" type="xs:string"/>
+
+            <!--Common properties-->
+            <xs:element name="queryFilter" type="xs:string"/>
+
+            <!--Explicit dataset properties-->
+            <xs:element name="database" type="xs:string"/>
+            <xs:element name="databaseName" type="xs:string"/>
+            <xs:element name="tableName" type="xs:string"/>
+
+            <!--Implicit dataset properties-->
+            <xs:element name="parentDataset" type="xs:string"/>
+
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="metadata">
+        <xs:sequence>
+            <xs:element name="portfolio" type="xs:integer"/>
+            <xs:element name="lifecycle" type="xs:integer"/>
+            <xs:element name="origin" type="xs:integer"/>
+            <xs:element name="modelType" type="xs:integer"/>
+            <xs:element name="outcomeType" type="xs:integer"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="modelUsedIn">
+        <xs:sequence>
+            <xs:element name="strategy" type="xs:string"/>
+            <xs:element name="notes" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="scoreDistribution">
+        <xs:sequence>
+            <xs:element name="displayLabel" type="xs:string"/>
+            <xs:element name="lowerBound" type="xs:double"/>
+            <xs:element name="upperBound" type="xs:double"/>
+            <xs:element name="baselinePct" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- ============================ Elements =========================== -->
+
+    <xs:element name="currentVersion" type="xs:string"/>
+
+    <xs:element name="initialRelease" type="xs:dateTime"/>
+    <xs:element name="modelType" type="ml:modelType"/>
+    <xs:element name="origin" type="ml:modelOrigin"/>
+    <xs:element name="outcomeType" type="ml:modelOutcomeType"/>
+    <xs:element name="owner" type="xs:string"/>
+    <xs:element name="technology" type="ml:modelTechnology"/>
+
+    <xs:element name="schema" type="ml:schema"/>
+    <xs:element name="validationDataset" type="ml:dataset"/>
+    <xs:element name="baselineDataset" type="ml:dataset" nillable="true"/>
+
+    <xs:element name="metadata" type="ml:metadata"/>
+
+    <xs:element name="developmentSampleWindow" type="xs:string"/>
+    <xs:element name="currentVersionReleaseDate" type="xs:dateTime"/>
+    <xs:element name="dateRetired" type="xs:dateTime"/>
+    <xs:element name="modelUsedIns">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="modelUsedIn" type="ml:modelUsedIn" minOccurs="0" maxOccurs="10000"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+  <xs:element name="cutoffScore" type="xs:double"/>
+  <xs:element name="segmented" type="xs:boolean"/>
+  <xs:element name="modelSegments">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="modelSegment" type="ml:modelSegment" minOccurs="0" maxOccurs="10000"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="segmentCount" type="xs:integer"/>
+
+    <xs:element name="segmentVariable" type="ml:variable"/>
+
+    <xs:element name="scoringVersionId" type="xs:string"/>
+
+  <xs:element name="scoreDistributions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="scoreDistribution" type="ml:scoreDistribution" minOccurs="0"
+          maxOccurs="10000" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+    <xs:element name="benchmarkFilter" type="xs:string"/>
+    <xs:element name="modelFilter" type="xs:string"/>
+    <xs:element name="formula" type="xs:string"/>
+    <xs:element name="scoreDescending" type="xs:boolean"/>
+    <xs:element name="customSegment" type="xs:boolean"/>
+</xs:schema>
+
